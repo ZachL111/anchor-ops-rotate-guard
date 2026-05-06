@@ -1,0 +1,17 @@
+{
+  "repo": "anchor-ops-rotate-guard",
+  "thresholds": {
+    "signal": 2,
+    "slack": 2,
+    "confidence": 1,
+    "drag": 4,
+    "ship": 194,
+    "watch": 113
+  },
+  "terms": [
+    "dry-run spread",
+    "rename risk",
+    "operator cost",
+    "idempotence"
+  ]
+}

@@ -1,69 +1,40 @@
 # anchor-ops-rotate-guard
 
-`anchor-ops-rotate-guard` is a focused JavaScript codebase around develop a JavaScript command-oriented project for rotate scenarios with transition tables, invalid-transition tests, and no credentials or hosted services. It is meant to be easy to inspect, run, and extend without a hosted service.
+`anchor-ops-rotate-guard` keeps a focused JavaScript implementation around automation. The project goal is to develop a JavaScript command-oriented project for rotate scenarios with transition tables, invalid-transition tests, and no credentials or hosted services.
 
-## Anchor Ops Rotate Guard Walkthrough
+## Why It Exists
 
-I would read the project from the outside in: command, fixture, model, then roadmap. That keeps the automation idea grounded in files that can be checked locally.
+This is intentionally local and self-contained so it can be inspected without credentials, services, or seeded history.
 
-## Reason For The Project
+## Anchor Ops Rotate Guard Review Notes
 
-This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
+`stale` and `recovery` are the cases worth reading first. They show the optimistic and cautious ends of the fixture.
 
-## Data Notes
+## Features
 
-`degraded` is the first example I would inspect because it lands on the `review` path with a score of 3. The broader file also keeps `degraded` at 3 and `recovery` at 247, which gives the model a useful low-to-high spread.
+- `fixtures/domain_review.csv` adds cases for dry-run spread and rename risk.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/anchor-ops-rotate-walkthrough.md` walks through the case spread.
+- The JavaScript code includes a review path for `dry-run spread` and `idempotence`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## How It Is Put Together
+## Architecture Notes
 
-The design is intentionally direct: parse or construct a signal, score it, classify it, and verify the expected branch. This makes the repository useful for studying automation behavior without needing a service or database unless the language project itself is SQL. The JavaScript version uses native modules and a small Node test path.
+The fixture data drives the tests. The code stays thin, while `metadata/domain-review.json` and `config/review-profile.json` explain what each case is meant to protect.
 
-## Capabilities
+The JavaScript implementation avoids hidden state so fixture changes are easy to reason about.
 
-- Models dry-run output with deterministic scoring and explicit review decisions.
-- Uses fixture data to keep file plans changes visible in code review.
-- Includes extended examples for safety rails, including `recovery` and `degraded`.
-- Documents idempotent checks tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-
-## Command Examples
+## Usage
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Tests
 
-## Check The Work
+The verifier is intentionally local. It should fail if the fixture score math, lane assignment, or language-specific test drifts.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Limitations And Roadmap
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Where Things Live
-
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `package.json`: Node package scripts
-
-## Possible Extensions
-
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Add one more automation fixture that focuses on a malformed or borderline input.
-
-## Tradeoffs
-
-The fixture set is deliberately small. That keeps the review surface clear, but it also means the model should not be treated as a complete domain simulator.
-
-## Getting It Running
-
-Use a normal shell with JavaScript available on `PATH`. The verifier is written as a PowerShell script because the portfolio was assembled on Windows.
+No external service is required. A deeper version would add more negative cases and a clearer boundary around invalid input.
